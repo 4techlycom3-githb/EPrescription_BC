@@ -9,7 +9,7 @@ page 50039 "PDS Prescription Header API"
     EntityName = 'prescription';
     EntitySetName = 'prescriptions';
     PageType = API;
-    SourceTable = "PDS EPrescription Hdr Buffer";
+    SourceTable = "PDS Prescription Hdr Buffer";
 
     layout
     {

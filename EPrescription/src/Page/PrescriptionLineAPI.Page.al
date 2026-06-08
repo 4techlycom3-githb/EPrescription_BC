@@ -9,7 +9,7 @@ page 50040 "PDS Prescription Line API"
     EntityName = 'prescriptionLine';
     EntitySetName = 'prescriptionLines';
     PageType = API;
-    SourceTable = "PDS EPrescription Line Buffer";
+    SourceTable = "PDS Prescription Line Buffer";
 
     layout
     {
