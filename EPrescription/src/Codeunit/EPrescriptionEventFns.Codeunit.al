@@ -132,42 +132,77 @@ codeunit 50014 "PDS E-Prescription Event & Fns"
         end;
     end;
 
+    local procedure GetLastPOSLineNo(ReceiptNo: Code[20]): Integer
+    var
+        LSCPOSTransLine: Record "LSC POS Trans. Line";
+    begin
+        LSCPOSTransLine.SetCurrentKey("Receipt No.", "Line No.");
+        LSCPOSTransLine.SetRange("Receipt No.", ReceiptNo);
+        if LSCPOSTransLine.FindLast() then
+            exit(LSCPOSTransLine."Line No.");
+        exit(0);
+    end;
+
     //***Events***
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"LSC POS Controller", OnLookupResult, '', false, false)]
     local procedure LSCPOSController_OnLookupResult(LookupID: Text; FilterText: Text; resultOK: Boolean; var processed: Boolean)
     var
         EPresHdrBuffer: Record "PDS EPrescription Hdr Buffer";
-        LCSPOSTransaction: Record "LSC POS Transaction";
+        EPresLineBuffer: Record "PDS EPrescription Line Buffer";
+        LSCPOSTransaction: Record "LSC POS Transaction";
+        LSCPOSTransLine: Record "LSC POS Trans. Line";
         ActiveRecordID: RecordId;
-        LSC_POSControlInterface: Codeunit "LSC POS Control Interface";
+        LSCPOSControlInterface: Codeunit "LSC POS Control Interface";
+        LSCPOSTrans: Codeunit "LSC POS Transaction";
+        LSCPOSFunctions: Codeunit "LSC POS Functions";
+        Counter_l: Integer;
     begin
         if LookupID = '#PRESCRIPTIONLIST' then
             if resultOK then begin
                 begin
-                    if LSC_POSControlInterface.GetLookupActiveRecordID(LookupID, ActiveRecordID) then
+                    if LSCPOSControlInterface.GetLookupActiveRecordID(LookupID, ActiveRecordID) then
                         EPresHdrBuffer.Get(ActiveRecordID);
-                    message('Lookup Result: %1, %2, %3, ActiveRecordID %4', LookupID, FilterText, resultOK, EPresHdrBuffer."Prescription ID");
-                    /*
-                     POSTransCU.GetPOSTransaction(LPOSTransaction);
-                        if not LPOSTransaction.IsEmpty then begin
-                            // Perform validations
-                            LPOSTransaction.Validate("MCHDOCID", DoctorRec."No.");
-                            LPOSTransaction.Validate("MCHDOCLICENSE", DoctorRec."License No.");
-                            LPOSTransaction.Validate("MCHDOCNAME", DoctorRec.Name);
-                            LPOSTransaction.Validate(MedicalType, Format(DoctorRec."Medical Type"));
+                    // message('Lookup Result: %1, %2, %3, ActiveRecordID %4', LookupID, FilterText, resultOK, EPresHdrBuffer."Prescription ID");
 
-                            // Instead of calling Modify(), we pass it back to LS Central
-                            POSTransCU.SetPOSTransaction(LPOSTransaction);
+                    LSCPOSTrans.GetPOSTransaction(LSCPOSTransaction);
+                    if not LSCPOSTransaction.IsEmpty then begin
+                        LSCPOSTrans.SetPOSTransaction(LSCPOSTransaction);
 
-                            // Display confirmation and tag
-                            Message('Physician %1 (%2) selected successfully!', LPOSTransaction.MCHDOCID, LPOSTransaction.MCHDOCNAME);
-                            POSSession.SetValue(LSC_POSTAG::"Physician", LPOSTransaction.MCHDOCNAME);
-                            processed := true;
-                        end else begin
-                            Message('Current POS transaction not found.');
-                            processed := false;
-                        end;
-                    */
+                        LSCPOSTransaction."Prescribing Doctor" := EPresHdrBuffer."Prescribing Doctor";
+                        LSCPOSTransaction."Healthcare Assistant" := EPresHdrBuffer."Healthcare Assistant";
+                        if EPresHdrBuffer."Member Card No." <> '' then
+                            LSCPOSTrans.InputMemberCard(EPresHdrBuffer."Member Card No.");
+
+                        //--Insert POS Lines
+                        EPresLineBuffer.Reset();
+                        EPresLineBuffer.SetRange("Prescription ID", EPresHdrBuffer."Prescription ID");
+                        if EPresLineBuffer.FindSet() then
+                            repeat
+                                Counter_l += GetLastPOSLineNo(LSCPOSTransaction."Receipt No.") + 10000;
+                                LSCPOSTransLine.Init;
+                                LSCPOSTransLine.Validate("Receipt No.", LSCPOSTransaction."Receipt No.");
+                                LSCPOSTransLine."Store No." := LSCPOSTransaction."Store No.";
+                                LSCPOSTransLine."POS Terminal No." := LSCPOSTransaction."POS Terminal No.";
+                                LSCPOSTransLine.Validate("Line No.", Counter_l);
+                                LSCPOSTransLine.Insert(true);
+                                LSCPOSTransLine."Entry Type" := LSCPOSTransLine."Entry Type"::Item;
+                                LSCPOSTransLine.Validate(Number, EPresLineBuffer."Item No.");
+                                LSCPOSTransLine.Validate(Quantity, EPresLineBuffer."Qty. to Dispense");
+                                // LSCPOSTransLine.Validate("Lot No.", EPresLineBuffer."Lot No.");
+                                // LSCPOSTransLine.Validate("Expiration Date", EPresLineBuffer."Expiration Date");
+                                LSCPOSTransLine.CalcPrices();
+                                LSCPOSTransLine.Modify;
+                            until EPresLineBuffer.Next() = 0;
+                        LSCPOSTrans.CalcTotals;
+                        // EPresHdrBuffer."Converted to POS" := true;
+                        // EPresHdrBuffer.Modify;
+
+                        processed := true;
+                    end else begin
+                        Message('Current POS Transaction Not Found.');
+                        processed := false;
+                    end;
+
                 end;
             end;
     end;

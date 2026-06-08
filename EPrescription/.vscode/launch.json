@@ -1,0 +1,48 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Your own server",
+            "request": "launch",
+            "type": "al", 
+            "environmentType": "OnPrem",
+            // "server": "http://localhost/", 
+            // "serverInstance": "BC230PDI2",
+            // "port": 23449,
+            // "authentication": "Windows",
+
+            "server": "http://localhost/", 
+            "serverInstance": "BC230PDI",
+            "port": 23249,
+            "authentication": "Windows",
+            
+            "breakOnError": "All",
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "tenant":"default",
+            "usePublicURLFromServer": true,            
+            "schemaUpdateMode": "ForceSync"
+            /*
+            {
+            "id": "5ecfc871-5d82-43f1-9c54-59685e82318d",
+            "publisher": "LS Retail",
+            "name": "LS Central",
+            "version": "23.0.0.0"
+            }, 
+            {
+            "id": "16a4b8e9-d603-4a8d-9c29-11ac4ac9ac28",
+            "publisher": "Associates 365 Corp.",
+            "name": "LSC21 PHPOS",
+            "version": "21.0.0.0"
+            }, 
+            {
+            "id": "dc4b3ddf-1b1b-4caa-8683-3c9e1b6d322d",
+            "publisher": "Associates 365",
+            "name": "PHTAX",
+            "version": "19.0.0.0"
+            }
+            */
+        }
+    ]
+}

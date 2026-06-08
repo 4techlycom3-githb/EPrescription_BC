@@ -39,6 +39,10 @@ page 50038 "PDS E-Prescription Subform"
                 {
                     ToolTip = 'Specifies the value of the Qty. to Dispense field.', Comment = '%';
                 }
+                // field("Lot No."; Rec."Lot No.")
+                // {
+                //     ToolTip = 'Specifies the value of the Lot No. field.', Comment = '%';
+                // }
                 field(Dosage; Rec.Dosage)
                 {
                     ToolTip = 'Specifies the value of the Dosage field.', Comment = '%';

@@ -9,9 +9,9 @@ table 50015 "PDS EPrescription Hdr Buffer"
         {
             Caption = 'Prescription ID';
         }
-        field(2; "Patient ID"; Code[50])
+        field(2; "Member Card No."; Code[50])
         {
-            Caption = 'Patient ID';
+            Caption = 'Member Card No.';
         }
         field(3; "Patient First Name"; Text[100])
         {
@@ -36,6 +36,10 @@ table 50015 "PDS EPrescription Hdr Buffer"
         field(100; "Sent to POS"; Boolean)
         {
             Caption = 'Sent to POS';
+        }
+        field(101; "Converted to POS"; Boolean)
+        {
+            Caption = 'Converted to POS';
         }
     }
     keys

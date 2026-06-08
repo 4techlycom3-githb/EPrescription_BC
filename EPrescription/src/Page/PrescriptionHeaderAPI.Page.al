@@ -21,9 +21,9 @@ page 50039 "PDS Prescription Header API"
                 {
                     Caption = 'Prescription ID';
                 }
-                field(patientID; Rec."Patient ID")
+                field(memberCardNo; Rec."Member Card No.")
                 {
-                    Caption = 'Patient ID';
+                    Caption = 'Member Card No.';
                 }
                 field(patientFirstName; Rec."Patient First Name")
                 {

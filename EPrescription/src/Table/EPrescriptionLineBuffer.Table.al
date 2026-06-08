@@ -56,6 +56,10 @@ table 50016 "PDS EPrescription Line Buffer"
         {
             Caption = 'Qty. to Dispense';
         }
+        // field(54; "Lot No."; Code[20])
+        // {
+        //     Caption = 'Lot No.';
+        // }
     }
     keys
     {

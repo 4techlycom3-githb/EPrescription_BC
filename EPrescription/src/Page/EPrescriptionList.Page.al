@@ -17,9 +17,9 @@ page 50036 "PDS E-Prescription List"
                 {
                     ToolTip = 'Specifies the value of the Prescription ID field.', Comment = '%';
                 }
-                field("Patient ID"; Rec."Patient ID")
+                field("Member Card No."; Rec."Member Card No.")
                 {
-                    ToolTip = 'Specifies the value of the Patient ID field.', Comment = '%';
+                    ToolTip = 'Specifies the value of the Member Card No. field.', Comment = '%';
                 }
                 field("Patient First Name"; Rec."Patient First Name")
                 {
