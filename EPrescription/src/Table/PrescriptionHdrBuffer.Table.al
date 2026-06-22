@@ -25,6 +25,27 @@ table 50015 "PDS Prescription Hdr Buffer"
         {
             Caption = 'Patient Last Name';
         }
+        field(6; Age; Integer)
+        {
+            Caption = 'Age';
+        }
+        field(7; Gender; Code[10])
+        {
+            Caption = 'Gender';
+        }
+        field(8; Address; Text[100])
+        {
+            Caption = 'Address';
+        }
+        field(9; "Prescription Date"; Date)
+        {
+            Caption = 'Prescription Date';
+        }
+        field(10; "Health Plus No."; code[50])
+        {
+            Caption = 'Health Plus No.';
+        }
+
         field(51; "Prescribing Doctor"; Text[100])
         {
             Caption = 'Prescribing Doctor';
@@ -36,10 +57,12 @@ table 50015 "PDS Prescription Hdr Buffer"
         field(100; "Sent to POS"; Boolean)
         {
             Caption = 'Sent to POS';
+            Editable = false;
         }
         field(101; "Converted to POS"; Boolean)
         {
             Caption = 'Converted to POS';
+            Editable = false;
         }
     }
     keys

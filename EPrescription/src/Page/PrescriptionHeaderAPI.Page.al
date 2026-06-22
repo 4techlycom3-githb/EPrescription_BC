@@ -25,6 +25,14 @@ page 50039 "PDS Prescription Header API"
                 {
                     Caption = 'Member Card No.';
                 }
+                field(healthPlusNo; Rec."Health Plus No.")
+                {
+                    Caption = 'Health Plus No.';
+                }
+                field(prescriptionDate; Rec."Prescription Date")
+                {
+                    Caption = 'Prescription Date';
+                }
                 field(patientFirstName; Rec."Patient First Name")
                 {
                     Caption = 'Patient First Name';
@@ -36,6 +44,18 @@ page 50039 "PDS Prescription Header API"
                 field(patientLastName; Rec."Patient Last Name")
                 {
                     Caption = 'Patient Last Name';
+                }
+                field(age; Rec.Age)
+                {
+                    Caption = 'Age';
+                }
+                field(gender; Rec.Gender)
+                {
+                    Caption = 'Gender';
+                }
+                field(address; Rec.Address)
+                {
+                    Caption = 'Address';
                 }
                 field(prescribingDoctor; Rec."Prescribing Doctor")
                 {

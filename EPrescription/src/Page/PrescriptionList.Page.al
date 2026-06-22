@@ -2,6 +2,7 @@ page 50036 "PDS Prescription List"
 {
     ApplicationArea = All;
     Caption = 'Prescription List';
+    Editable = false;
     PageType = List;
     SourceTable = "PDS Prescription Hdr Buffer";
     UsageCategory = Documents;
@@ -41,6 +42,11 @@ page 50036 "PDS Prescription List"
                 {
                     ToolTip = 'Specifies the value of the Healthcare Assistant field.', Comment = '%';
                 }
+                field("Sent to POS"; Rec."Sent to POS")
+                {
+                    ToolTip = 'Specifies if the prescription has been sent to the POS system.', Comment = '%';
+                }
+
             }
         }
     }
@@ -54,14 +60,44 @@ page 50036 "PDS Prescription List"
                 Caption = 'Print Prescription';
                 ToolTip = 'Print this prescription.';
                 Image = Print;
+                PromotedCategory = Process;
                 Promoted = true;
+                PromotedIsBig = true;
                 PromotedOnly = true;
 
                 trigger OnAction()
                 var
-                // PresPrintMgmt: Codeunit "PDS Prescription Print Management";
+                    PrescriptionHeader: record "PDS Prescription Hdr Buffer";
                 begin
-                    // PresPrintMgmt.PrintPrescription(Rec."Prescription ID");
+                    PrescriptionHeader.SetRange("Prescription ID", Rec."Prescription ID");
+                    Report.RunModal(Report::"PDS Prescription", true, false, PrescriptionHeader);
+                end;
+            }
+            action(SendToPOS)
+            {
+                Caption = 'Send to POS';
+                ToolTip = 'Send this prescription to the POS system.';
+                Image = SendTo;
+                PromotedCategory = Process;
+                Promoted = true;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+
+                trigger OnAction()
+                var
+                    PrescriptionHeader: record "PDS Prescription Hdr Buffer";
+                begin
+                    if confirm('Are you sure you want to send the selected prescription to the POS system?', false) then begin
+                        currpage.SetSelectionFilter(PrescriptionHeader);
+                        if PrescriptionHeader.FindSet() then
+                            repeat
+                                PrescriptionHeader."Sent to POS" := true;
+                                PrescriptionHeader.Modify();
+                            // message('Sending Prescription ID %1 to POS system...', PrescriptionHeader."Prescription ID");
+                            until PrescriptionHeader.Next() = 0;
+                        if PrescriptionHeader.Count <> 0 then
+                            Message('Prescription sent to POS system successfully.');
+                    end;
                 end;
             }
         }
