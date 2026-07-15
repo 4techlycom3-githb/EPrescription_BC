@@ -21,9 +21,9 @@ table 50016 "PDS Prescription Line Buffer"
         {
             Caption = 'Dosage';
         }
-        field(5; Frequency; Decimal)
+        field(5; Signa; Decimal)
         {
-            Caption = 'Frequency';
+            Caption = 'Signa';
         }
         field(6; Duration; Decimal)
         {
@@ -42,15 +42,27 @@ table 50016 "PDS Prescription Line Buffer"
             Caption = 'Item No.';
             TableRelation = Item."No.";
             trigger OnValidate()
+            var
+                Item: Record Item;
+                PlanetSubCode: Record "Planet Subcode";
+                RetailUser: Record "LSC Retail User";
             begin
-                CalcFields("Item Description");
+                if RetailUser.Get(UserId) then;
+                if "Item No." <> '' then
+                    if Item.Get("Item No.") then
+                        if PlanetSubCode.Get("Item No.", RetailUser."Store No.") then begin
+                            "Item Sub Description" := PlanetSubCode."Sub Description";
+                            Modify();
+                        end else begin
+                            "Item Sub Description" := Item.Description;
+                            Modify();
+                        end;
             end;
         }
-        field(52; "Item Description"; Text[100])
+        field(52; "Item Sub Description"; Text[100])
         {
-            Caption = 'Item Description';
-            FieldClass = FlowField;
-            CalcFormula = lookup(Item.Description where("No." = field("Item No.")));
+            Caption = 'Item Sub Description';
+            Editable = false;
         }
         field(53; "Qty. to Dispense"; Decimal)
         {

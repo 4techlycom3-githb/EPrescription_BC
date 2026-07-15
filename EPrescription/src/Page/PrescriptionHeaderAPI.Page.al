@@ -65,6 +65,10 @@ page 50039 "PDS Prescription Header API"
                 {
                     Caption = 'Healthcare Assistant';
                 }
+                field(pharmacyNo; Rec."Pharmacy No.")
+                {
+                    Caption = 'Pharmacy No.';
+                }
                 part(presciptionLines; "PDS Prescription Line API")
                 {
                     EntityName = 'prescriptionLine';

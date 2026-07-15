@@ -93,7 +93,6 @@ page 50036 "PDS Prescription List"
                             repeat
                                 PrescriptionHeader."Sent to POS" := true;
                                 PrescriptionHeader.Modify();
-                            // message('Sending Prescription ID %1 to POS system...', PrescriptionHeader."Prescription ID");
                             until PrescriptionHeader.Next() = 0;
                         if PrescriptionHeader.Count <> 0 then
                             Message('Prescription sent to POS system successfully.');
@@ -102,4 +101,16 @@ page 50036 "PDS Prescription List"
             }
         }
     }
+
+    trigger OnOpenPage()
+    var
+        RetailUser: Record "LSC Retail User";
+    begin
+        if RetailUser.Get(UserId) then
+            if RetailUser."Store No." <> '' then begin
+                Rec.FilterGroup(2);
+                Rec.SetRange("Pharmacy No.", RetailUser."Store No.");
+                Rec.FilterGroup(0);
+            end;
+    end;
 }

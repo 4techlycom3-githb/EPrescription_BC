@@ -33,7 +33,7 @@ report 50100 "PDS Prescription"
                 { }
                 column(Duration; Duration)
                 { }
-                column(Frequency; Frequency)
+                column(Signa; Signa)
                 { }
                 column(Qty; Qty)
                 { }

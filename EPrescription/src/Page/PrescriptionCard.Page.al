@@ -17,6 +17,10 @@ page 50037 "PDS Prescription Card"
                 {
                     ToolTip = 'Specifies the value of the Prescription ID field.', Comment = '%';
                 }
+                field("Health Plus No."; Rec."Health Plus No.")
+                {
+                    ToolTip = 'Specifies the value of the Health Plus No. field.', Comment = '%';
+                }
                 field("Member Card No."; Rec."Member Card No.")
                 {
                     ToolTip = 'Specifies the value of the Member Card No. field.', Comment = '%';
@@ -33,6 +37,18 @@ page 50037 "PDS Prescription Card"
                 {
                     ToolTip = 'Specifies the value of the Patient Last Name field.', Comment = '%';
                 }
+                field(Gender; Rec.Gender)
+                {
+                    ToolTip = 'Specifies the value of the Gender field.', Comment = '%';
+                }
+                field(Age; Rec.Age)
+                {
+                    ToolTip = 'Specifies the value of the Age field.', Comment = '%';
+                }
+                field(Address; Rec.Address)
+                {
+                    ToolTip = 'Specifies the value of the Address field.', Comment = '%';
+                }
                 field("Prescribing Doctor"; Rec."Prescribing Doctor")
                 {
                     ToolTip = 'Specifies the value of the Prescribing Doctor field.', Comment = '%';
@@ -40,6 +56,10 @@ page 50037 "PDS Prescription Card"
                 field("Healthcare Assistant"; Rec."Healthcare Assistant")
                 {
                     ToolTip = 'Specifies the value of the Healthcare Assistant field.', Comment = '%';
+                }
+                field("Pharmacy No."; Rec."Pharmacy No.")
+                {
+                    ToolTip = 'Specifies the value of the Pharmacy No. field.', Comment = '%';
                 }
                 field("Sent to POS"; Rec."Sent to POS")
                 {
@@ -68,7 +88,6 @@ page 50037 "PDS Prescription Card"
 
                 trigger OnAction()
                 var
-                    StoreTerminalSelectionPage: Page "PDS Store & Terminal Selection";
                     PrescriptionEventFns: Codeunit "PDS E-Prescription Event & Fns";
                     StoreNoTxt: Code[20];
                     TerminalNoTxt: Code[20];
@@ -79,12 +98,6 @@ page 50037 "PDS Prescription Card"
 
                     Rec."Sent to POS" := true;
                     Rec.Modify();
-
-                    // if StoreTerminalSelectionPage.RunModal() = Action::OK then begin
-                    //     StoreTerminalSelectionPage.GetSelection(StoreNoTxt, TerminalNoTxt, StaffNoTxt);
-                    //     PrescriptionEventFns.ConvertPrescriptionToPOS(Rec."Prescription ID", StoreNoTxt, TerminalNoTxt, StaffNoTxt);
-                    //     Message('done');
-                    // end;
                 end;
             }
         }

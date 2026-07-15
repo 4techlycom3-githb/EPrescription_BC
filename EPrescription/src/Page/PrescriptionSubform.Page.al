@@ -27,7 +27,7 @@ page 50038 "PDS Prescription Subform"
                 {
                     ToolTip = 'Specifies the value of the Item No. field.', Comment = '%';
                 }
-                field("Item Description"; Rec."Item Description")
+                field("Item Sub Description"; Rec."Item Sub Description")
                 {
                     ToolTip = 'Specifies the value of the Item Description field.', Comment = '%';
                 }
@@ -47,9 +47,9 @@ page 50038 "PDS Prescription Subform"
                 {
                     ToolTip = 'Specifies the value of the Dosage field.', Comment = '%';
                 }
-                field(Frequency; Rec.Frequency)
+                field(Signa; Rec.Signa)
                 {
-                    ToolTip = 'Specifies the value of the Frequency field.', Comment = '%';
+                    ToolTip = 'Specifies the value of the Signa field.', Comment = '%';
                 }
                 field("Duration"; Rec."Duration")
                 {

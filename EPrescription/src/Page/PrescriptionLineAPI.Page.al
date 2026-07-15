@@ -33,9 +33,9 @@ page 50040 "PDS Prescription Line API"
                 {
                     Caption = 'Dosage';
                 }
-                field(frequency; Rec.Frequency)
+                field(signa; Rec.Signa)
                 {
-                    Caption = 'Frequency';
+                    Caption = 'Signa';
                 }
                 field(duration; Rec."Duration")
                 {

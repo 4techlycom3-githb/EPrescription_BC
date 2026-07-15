@@ -45,6 +45,11 @@ table 50015 "PDS Prescription Hdr Buffer"
         {
             Caption = 'Health Plus No.';
         }
+        field(11; "Pharmacy No."; code[50])
+        {
+            Caption = 'Pharmacy No.';
+            TableRelation = "LSC Store"."No.";
+        }
 
         field(51; "Prescribing Doctor"; Text[100])
         {

@@ -11,7 +11,7 @@
       <am:Name>PBIRB</am:Name>
       <am:Version>15.7.1819.28</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2026-06-22T09:50:07.8059573Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-07-14T14:15:54.9028776Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -426,7 +426,7 @@
                                     <Paragraph>
                                       <TextRuns>
                                         <TextRun>
-                                          <Value>=Fields!Duration.Value</Value>
+                                          <Value>=Fields!Signa.Value</Value>
                                           <Style>
                                             <FontFamily>Calibri</FontFamily>
                                             <FontSize>11pt</FontSize>
@@ -462,7 +462,7 @@
                                     <Paragraph>
                                       <TextRuns>
                                         <TextRun>
-                                          <Value>=Fields!Frequency.Value</Value>
+                                          <Value>=Fields!Duration.Value</Value>
                                           <Style>
                                             <FontFamily>Calibri</FontFamily>
                                             <FontSize>11pt</FontSize>
@@ -1662,11 +1662,11 @@ KAFFACUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFABQAUAFA
         <Field Name="DurationFormat">
           <DataField>DurationFormat</DataField>
         </Field>
-        <Field Name="Frequency">
-          <DataField>Frequency</DataField>
+        <Field Name="Signa">
+          <DataField>Signa</DataField>
         </Field>
-        <Field Name="FrequencyFormat">
-          <DataField>FrequencyFormat</DataField>
+        <Field Name="SignaFormat">
+          <DataField>SignaFormat</DataField>
         </Field>
         <Field Name="Qty">
           <DataField>Qty</DataField>
