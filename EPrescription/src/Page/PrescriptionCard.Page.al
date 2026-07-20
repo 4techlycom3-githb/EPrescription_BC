@@ -78,6 +78,24 @@ page 50037 "PDS Prescription Card"
     {
         area(Processing)
         {
+            action(PrintPrescription)
+            {
+                Caption = 'Print Prescription';
+                ToolTip = 'Print this prescription.';
+                Image = Print;
+                PromotedCategory = Process;
+                Promoted = true;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+
+                trigger OnAction()
+                var
+                    PrescriptionHeader: record "PDS Prescription Hdr Buffer";
+                begin
+                    PrescriptionHeader.SetRange("Prescription ID", Rec."Prescription ID");
+                    Report.RunModal(Report::"PDS Prescription", true, false, PrescriptionHeader);
+                end;
+            }
             action("SendToPOS")
             {
                 Caption = 'Send to POS';

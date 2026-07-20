@@ -36,12 +36,13 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
     var
         PresHdrBuffer: Record "PDS Prescription Hdr Buffer";
         PresLineBuffer: Record "PDS Prescription Line Buffer";
+        PresLineBuffer2: Record "PDS Prescription Line Buffer";
         LSCPOSTransaction: Record "LSC POS Transaction";
         LSCPOSTransLine: Record "LSC POS Trans. Line";
-        ActiveRecordID: RecordId;
         LSCPOSControlInterface: Codeunit "LSC POS Control Interface";
         LSCPOSTrans: Codeunit "LSC POS Transaction";
         LSCPOSFunctions: Codeunit "LSC POS Functions";
+        ActiveRecordID: RecordId;
         Counter_l: Integer;
     begin
         if LookupID = '#PRESCRIPTIONLIST' then
@@ -49,7 +50,6 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
                 begin
                     if LSCPOSControlInterface.GetLookupActiveRecordID(LookupID, ActiveRecordID) then
                         PresHdrBuffer.Get(ActiveRecordID);
-                    // message('Lookup Result: %1, %2, %3, ActiveRecordID %4', LookupID, FilterText, resultOK, PresHdrBuffer."Prescription ID");
 
                     LSCPOSTrans.GetPOSTransaction(LSCPOSTransaction);
                     if not LSCPOSTransaction.IsEmpty then begin
@@ -63,6 +63,7 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
                         //--Insert POS Lines
                         PresLineBuffer.Reset();
                         PresLineBuffer.SetRange("Prescription ID", PresHdrBuffer."Prescription ID");
+                        PresLineBuffer.SetRange("Converted to POS", false);
                         if PresLineBuffer.FindSet() then
                             repeat
                                 Counter_l += GetLastPOSLineNo(LSCPOSTransaction."Receipt No.") + 10000;
@@ -78,11 +79,20 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
                                 // LSCPOSTransLine.Validate("Lot No.", PresLineBuffer."Lot No.");
                                 // LSCPOSTransLine.Validate("Expiration Date", PresLineBuffer."Expiration Date");
                                 LSCPOSTransLine.CalcPrices();
+                                LSCPOSTransLine."Prescription ID" := PresLineBuffer."Prescription ID";
+                                LSCPOSTransLine."Prescription Line No." := PresLineBuffer."Line No.";
                                 LSCPOSTransLine.Modify;
+
+                                //--update prescription lines converted
+                                if PresLineBuffer2.Get(PresLineBuffer."Prescription ID", PresLineBuffer."Line No.") then begin
+                                    PresLineBuffer2."Converted to POS" := true;
+                                    PresLineBuffer2."Converted Date" := Today;
+                                    PresLineBuffer2.Modify();
+                                end;
                             until PresLineBuffer.Next() = 0;
                         LSCPOSTrans.CalcTotals;
-                        // PresHdrBuffer."Converted to POS" := true;
-                        // PresHdrBuffer.Modify;
+                        PresHdrBuffer."Converted to POS" := true;
+                        PresHdrBuffer.Modify;
 
                         processed := true;
                     end else begin
@@ -94,4 +104,31 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
             end;
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"LSC POS Transaction Events", OnAfterVoidLine, '', false, false)]
+    local procedure LSCPOSTransactionEvents_OnAfterVoidLine(var POSTransLine: Record "LSC POS Trans. Line")
+    var
+        PrescLines: Record "PDS Prescription Line Buffer";
+    begin
+        if PrescLines.Get(POSTransLine."Prescription ID", POSTransLine."Prescription Line No.") then begin
+            PrescLines."Converted to POS" := false;
+            PrescLines.Modify();
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"LSC POS Transaction Events", OnAfterVoidTransaction, '', false, false)]
+    local procedure LSCPOSTransactionEvents_OnAfterVoidTransaction(var POSTransaction: Record "LSC POS Transaction")
+    var
+        PrescLines: Record "PDS Prescription Line Buffer";
+        POSTransLine: Record "LSC POS Trans. Line";
+    begin
+        POSTransLine.Reset();
+        POSTransLine.SetRange("Receipt No.", POSTransaction."Receipt No.");
+        if POSTransLine.FindSet() then
+            repeat
+                if PrescLines.Get(POSTransLine."Prescription ID", POSTransLine."Prescription Line No.") then begin
+                    PrescLines."Converted to POS" := false;
+                    PrescLines.Modify();
+                end;
+            until POSTransLine.Next() = 0;
+    end;
 }

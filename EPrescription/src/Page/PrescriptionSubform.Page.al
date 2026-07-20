@@ -55,6 +55,10 @@ page 50038 "PDS Prescription Subform"
                 {
                     ToolTip = 'Specifies the value of the Duration field.', Comment = '%';
                 }
+                field("Converted to POS"; Rec."Converted to POS")
+                {
+                    ToolTip = 'Specifies the value of the Duration field.', Comment = '%';
+                }
             }
         }
     }
