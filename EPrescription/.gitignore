@@ -19,8 +19,10 @@ appfiles/*
 *~
 
 **/rad.json
-# launch.json 
+launch.json 
 # settings.json
 # ruleset.json
 .vscode/ruleset.json
 .vscode/settings.json
+.gitignore
+Translations/*

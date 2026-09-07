@@ -2,7 +2,7 @@
   "id": "850c5797-4c44-4bce-a82d-de6daebbf691",
   "name": "Prescription Integration",
   "publisher": "PDS-SysAdmins",
-  "version": "23.0.0.1",
+  "version": "23.0.0.2",
   "brief": "",
   "description": "",
   "privacyStatement": "",
@@ -16,6 +16,12 @@
       "publisher": "LS Retail",
       "name": "LS Central",
       "version": "23.0.0.0"
+    },
+    {
+      "id": "57441067-bf7b-43a7-bc97-3fb1eb0b8ccc",
+      "publisher": "PDS-SysAdmins",
+      "name": "PDS_Customization",
+      "version": "1.0.0.0"
     }
   ],
   "screenshots": [],

@@ -6,15 +6,15 @@
             "request": "launch",
             "type": "al", 
             "environmentType": "OnPrem",
-            // "server": "http://localhost/", 
-            // "serverInstance": "BC230PDI2",
-            // "port": 23449,
-            // "authentication": "Windows",
-
             "server": "http://localhost/", 
-            "serverInstance": "BC230PDI",
-            "port": 23249,
+            "serverInstance": "BC230PDI2",
+            "port": 23449,
             "authentication": "Windows",
+
+            // "server": "http://localhost/", 
+            // "serverInstance": "BC230PDI",
+            // "port": 23249,
+            // "authentication": "Windows",
             
             "breakOnError": "All",
             "launchBrowser": true,
