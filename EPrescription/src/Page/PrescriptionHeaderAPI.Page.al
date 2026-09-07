@@ -9,7 +9,7 @@ page 50039 "PDS Prescription Header API"
     EntityName = 'prescription';
     EntitySetName = 'prescriptions';
     PageType = API;
-    SourceTable = "PDS EPrescription Hdr Buffer";
+    SourceTable = "PDS Prescription Hdr Buffer";
 
     layout
     {
@@ -21,9 +21,17 @@ page 50039 "PDS Prescription Header API"
                 {
                     Caption = 'Prescription ID';
                 }
-                field(patientID; Rec."Patient ID")
+                field(memberCardNo; Rec."Member Card No.")
                 {
-                    Caption = 'Patient ID';
+                    Caption = 'Member Card No.';
+                }
+                field(healthPlusNo; Rec."Health Plus No.")
+                {
+                    Caption = 'Health Plus No.';
+                }
+                field(prescriptionDate; Rec."Prescription Date")
+                {
+                    Caption = 'Prescription Date';
                 }
                 field(patientFirstName; Rec."Patient First Name")
                 {
@@ -37,6 +45,18 @@ page 50039 "PDS Prescription Header API"
                 {
                     Caption = 'Patient Last Name';
                 }
+                field(age; Rec.Age)
+                {
+                    Caption = 'Age';
+                }
+                field(gender; Rec.Gender)
+                {
+                    Caption = 'Gender';
+                }
+                field(address; Rec.Address)
+                {
+                    Caption = 'Address';
+                }
                 field(prescribingDoctor; Rec."Prescribing Doctor")
                 {
                     Caption = 'Prescribing Doctor';
@@ -44,6 +64,10 @@ page 50039 "PDS Prescription Header API"
                 field(healthcareAssistant; Rec."Healthcare Assistant")
                 {
                     Caption = 'Healthcare Assistant';
+                }
+                field(pharmacyNo; Rec."Pharmacy No.")
+                {
+                    Caption = 'Pharmacy No.';
                 }
                 part(presciptionLines; "PDS Prescription Line API")
                 {
