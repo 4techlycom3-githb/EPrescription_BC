@@ -69,6 +69,14 @@ page 50039 "PDS Prescription Header API"
                 {
                     Caption = 'Pharmacy No.';
                 }
+                field(memberAccountNo; Rec."Member Account No.")
+                {
+                    Caption = 'Member Account No.';
+                }
+                field(birthdate; Rec.Birthdate)
+                {
+                    Caption = 'Birthdate';
+                }
                 part(presciptionLines; "PDS Prescription Line API")
                 {
                     EntityName = 'prescriptionLine';

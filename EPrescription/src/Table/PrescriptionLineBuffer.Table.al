@@ -40,26 +40,28 @@ table 50016 "PDS Prescription Line Buffer"
         field(51; "Item No."; Code[20])
         {
             Caption = 'Item No.';
-            TableRelation = Item."No.";
             trigger OnValidate()
             var
                 Item: Record Item;
                 PlanetSubCode: Record "Planet Subcode";
-                RetailUser: Record "LSC Retail User";
+                PrescHeader: Record "PDS Prescription Hdr Buffer";
             begin
-                if RetailUser.Get(UserId) then;
-                if "Item No." <> '' then begin
-                    if Item.Get("Item No.") then
-                        if PlanetSubCode.Get("Item No.", RetailUser."Store No.") then begin
-                            "Item Sub Description" := PlanetSubCode."Sub Description";
-                            Modify();
-                        end else begin
-                            "Item Sub Description" := Item.Description;
-                            Modify();
-                        end;
-                end else begin
+                if xRec."Item No." <> "Item No." then begin
                     "Item Sub Description" := '';
+                    "Item Sub Brand" := '';
+                    "Qty. to Dispense" := 0;
+                    "Lot No." := '';
+                    "Expiration Date" := 0D;
                     Modify();
+                end;
+                if PrescHeader.Get(Rec."Prescription ID") then;
+                if "Item No." <> '' then begin
+                    if PlanetSubCode.Get("Item No.", PrescHeader."Pharmacy No.") then begin
+                        "Item Sub Description" := PlanetSubCode."Sub Description";
+                        "Item Sub Brand" := PlanetSubCode."Sub Description 2";
+                        Modify();
+                    end else
+                        error('The item %1 is not available in the pharmacy %2.', "Item No.", PrescHeader."Pharmacy No.");
                 end;
             end;
         }
@@ -71,6 +73,16 @@ table 50016 "PDS Prescription Line Buffer"
         field(53; "Qty. to Dispense"; Decimal)
         {
             Caption = 'Qty. to Dispense';
+            trigger OnValidate()
+            begin
+                if xRec."Qty. to Dispense" <> "Qty. to Dispense" then begin
+                    "Lot No." := '';
+                    "Expiration Date" := 0D;
+                    Modify();
+                end;
+                if "Qty. to Dispense" > Qty then
+                    Error('The value of the Qty. to Dispense field cannot be greater than the value of the Qty field.');
+            end;
         }
         field(54; "Converted to POS"; Boolean)
         {
@@ -82,10 +94,20 @@ table 50016 "PDS Prescription Line Buffer"
             Caption = 'Converted Date';
             Editable = false;
         }
-        // field(54; "Lot No."; Code[20])
-        // {
-        //     Caption = 'Lot No.';
-        // }
+        field(56; "Item Sub Brand"; Text[100])
+        {
+            Caption = 'Item Sub Brand';
+            Editable = false;
+        }
+        field(57; "Lot No."; Code[20])
+        {
+            Caption = 'Lot No.';
+        }
+        field(58; "Expiration Date"; Date)
+        {
+            Caption = 'Expiration Date';
+            Editable = false;
+        }
     }
     keys
     {

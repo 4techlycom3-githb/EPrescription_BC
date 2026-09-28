@@ -50,6 +50,15 @@ table 50015 "PDS Prescription Hdr Buffer"
             Caption = 'Pharmacy No.';
             TableRelation = "LSC Store"."No.";
         }
+        field(12; "Member Account No."; code[50])
+        {
+            Caption = 'Member Account No.';
+            TableRelation = "LSC Member Account"."No.";
+        }
+        field(13; "Birthdate"; Date)
+        {
+            Caption = 'Birthdate';
+        }
 
         field(51; "Prescribing Doctor"; Text[100])
         {

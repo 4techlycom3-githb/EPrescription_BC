@@ -10,9 +10,13 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
         PrescriptionLineBuffer.SetRange("Prescription ID", PrescriptionID);
         if PrescriptionLineBuffer.FindSet() then
             repeat
+                if PrescriptionLineBuffer."Item No." = '' then
+                    exit(true);
                 if PrescriptionLineBuffer."Qty. to Dispense" < 1 then
                     exit(true);
-                if PrescriptionLineBuffer."Item No." = '' then
+                if PrescriptionLineBuffer."Lot No." = '' then
+                    exit(true);
+                if PrescriptionLineBuffer."Expiration Date" = 0D then
                     exit(true);
             until PrescriptionLineBuffer.Next() = 0;
 
