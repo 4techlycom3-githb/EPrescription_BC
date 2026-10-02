@@ -23,12 +23,14 @@ page 50037 "PDS Prescription Card"
                 }
                 field("Member Account No."; Rec."Member Account No.")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Member Account No. field.', Comment = '%';
 
-                    trigger OnLookup(var Text: Text): Boolean
+                    trigger OnDrillDown()
                     var
                         MemberAccountNew: Record "LSC Member Account";
                         MemberContactNew: Record "LSC Member Contact";
+                        MembershipCardNew: Record "LSC Membership Card";
                     begin
                         if Rec."Member Account No." = '' then begin
                             MemberAccountNew.Init();
@@ -51,6 +53,13 @@ page 50037 "PDS Prescription Card"
                             else
                                 MemberContactNew.Gender := MemberContactNew.Gender::Male;
                             MemberContactNew.Insert(true);
+
+                            MembershipCardNew.Init();
+                            MembershipCardNew."Card No." := Rec."Member Card No.";
+                            MembershipCardNew."Account No." := MemberAccountNew."No.";
+                            MembershipCardNew."Contact No." := MemberContactNew."Contact No.";
+                            MembershipCardNew."Club Code" := MemberAccountNew."Club Code";
+                            MembershipCardNew.Insert(true);
 
                             Page.Run(Page::"LSC Member Account", MemberAccountNew);
                             Rec."Member Account No." := MemberAccountNew."No.";
@@ -181,7 +190,8 @@ page 50037 "PDS Prescription Card"
         if RetailUser.Get(UserId()) then
             InventoryLocation := RetailUser."Inventory Location";
 
-        CurrPage.memberSalesHistory.Page.LoadData(Rec."Member Card No.");    //comment for testing
+        if Rec."Member Card No." <> '' then
+            CurrPage.memberSalesHistory.Page.LoadData(Rec."Member Card No.");    //comment for testing
     end;
 
     var

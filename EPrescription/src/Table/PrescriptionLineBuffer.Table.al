@@ -42,7 +42,6 @@ table 50016 "PDS Prescription Line Buffer"
             Caption = 'Item No.';
             trigger OnValidate()
             var
-                Item: Record Item;
                 PlanetSubCode: Record "Planet Subcode";
                 PrescHeader: Record "PDS Prescription Hdr Buffer";
             begin
@@ -102,6 +101,13 @@ table 50016 "PDS Prescription Line Buffer"
         field(57; "Lot No."; Code[20])
         {
             Caption = 'Lot No.';
+            trigger OnValidate()
+            begin
+                if Rec."Lot No." = '' then begin
+                    Rec."Expiration Date" := 0D;
+                    Rec.Modify();
+                end;
+            end;
         }
         field(58; "Expiration Date"; Date)
         {

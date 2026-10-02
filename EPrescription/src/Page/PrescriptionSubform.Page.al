@@ -52,36 +52,68 @@ page 50038 "PDS Prescription Subform"
                 }
                 field("Qty. to Dispense"; Rec."Qty. to Dispense")
                 {
+                    Style = Attention;
                     ToolTip = 'Specifies the value of the Qty. to Dispense field.', Comment = '%';
                 }
                 field("Lot No."; Rec."Lot No.")
                 {
+                    Editable = false;
+                    Style = Attention;
                     ToolTip = 'Specifies the value of the Lot No. field.', Comment = '%';
-                    trigger OnLookup(var Text: Text): Boolean
+                    trigger OnDrillDown()
                     var
                         InvLookupTable: Record "LSC Inventory Lookup Table";
                         RetailUser: Record "LSC Retail User";
-                        PrescHeader: Record "PDS Prescription Hdr Buffer";
+                        // PrescHeader: Record "PDS Prescription Hdr Buffer";
                         EnhanceFunc: Codeunit "Enhancement Functions PDI";
+                        PDSInvLookupList: Page "PDS Inventory Lookup List";
                     begin
                         Rec.TestField("Qty. to Dispense");
-                        // if Rec."Qty. to Dispense" <> 0 then begin
-                        // if RetailUser.Get(UserId) then;
-                        // if PrescHeader.Get(Rec."Prescription ID") then;
-                        // EnhanceFunc.UpdateInvLookupTableQ(Rec."Item No.", PrescHeader."Pharmacy No.", RetailUser."Inventory Location", false);
 
-                        // InvLookupTable.Reset();
+                        // if Rec."Lot No." <> '' then
+                        //     exit;
+
+                        if RetailUser.Get(UserId) then;
+                        RetailUser.TestField("Inventory Location");
+                        // EnhanceFunc.UpdateInvLookupTableQ(Rec."Item No.", '', RetailUser."Inventory Location", true);
+
+                        InvLookupTable.Reset();
+                        InvLookupTable.SetRange("Item No.", Rec."Item No.");
+                        InvLookupTable.SetRange(Location, RetailUser."Inventory Location");
+
+                        Clear(PDSInvLookupList);
+                        PDSInvLookupList.SetTableView(InvLookupTable);
+                        PDSInvLookupList.SetRecord(InvLookupTable);
+                        PDSInvLookupList.LookupMode(true);
+                        PDSInvLookupList.SetUp(Rec."Item Sub Description");
+                        if PDSInvLookupList.RunModal() = Action::LookupOK then begin
+                            PDSInvLookupList.GetRecord(InvLookupTable);
+                            Rec."Lot No." := InvLookupTable."Lot No.";
+                            Rec."Expiration Date" := InvLookupTable."Expiration Date";
+                            Rec.Modify(false);
+                        end;
+
+                        /*
+                        if RetailUser.Get(UserId) then;
+                        if PrescHeader.Get(Rec."Prescription ID") then;
+                        EnhanceFunc.UpdateInvLookupTableQ(Rec."Item No.", '', RetailUser."Inventory Location", true);
+
+                        InvLookupTable.Reset();
                         // InvLookupTable.SetRange("Store No.", PrescHeader."Pharmacy No.");
-                        // InvLookupTable.SetRange("Item No.", Rec."Item No.");
-                        // InvLookupTable.SetRange(Location, RetailUser."Inventory Location");
-                        // if Page.RunModal(Page::"LSC Inventory Location List", InvLookupTable) = Action::LookupOK then
-                        //     Rec.Validate("Item No.", PlanetSubCode."Item Code");
-                        // end else
-                        //     Error('Please enter Qty to Dispense');
+                        InvLookupTable.SetRange("Item No.", Rec."Item No.");
+                        InvLookupTable.SetRange(Location, RetailUser."Inventory Location");
+                        if Page.RunModal(Page::"PDS Inventory Lookup List", InvLookupTable) = Action::LookupOK then begin
+                            // if PDSInvLookupList.RunModal() = Action::LookupOK then begin
+                            Rec."Lot No." := InvLookupTable."Lot No.";
+                            Rec."Expiration Date" := InvLookupTable."Expiration Date";
+                            Rec.Modify(false);
+                        end;
+                        */
                     end;
                 }
                 field("Expiration Date"; Rec."Expiration Date")
                 {
+                    Style = Attention;
                     ToolTip = 'Specifies the value of the Expiration Date field.', Comment = '%';
                 }
                 field(Dosage; Rec.Dosage)
