@@ -48,6 +48,7 @@ table 50015 "PDS Prescription Hdr Buffer"
         field(11; "Pharmacy No."; code[50])
         {
             Caption = 'Pharmacy No.';
+            Editable = false;
             TableRelation = "LSC Store"."No.";
         }
         field(12; "Member Account No."; code[50])

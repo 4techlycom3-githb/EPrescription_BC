@@ -40,6 +40,8 @@ table 50016 "PDS Prescription Line Buffer"
         field(51; "Item No."; Code[20])
         {
             Caption = 'Item No.';
+            TableRelation = "Planet Subcode"."Item Code" where("Location Code" = field("Store No."));
+
             trigger OnValidate()
             var
                 PlanetSubCode: Record "Planet Subcode";
@@ -112,6 +114,11 @@ table 50016 "PDS Prescription Line Buffer"
         field(58; "Expiration Date"; Date)
         {
             Caption = 'Expiration Date';
+            Editable = false;
+        }
+        field(59; "Store No."; Code[20])
+        {
+            Caption = 'Store No.';
             Editable = false;
         }
     }

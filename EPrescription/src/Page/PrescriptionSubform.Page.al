@@ -2,8 +2,8 @@ page 50038 "PDS Prescription Subform"
 {
     AutoSplitKey = true;
     Caption = 'Lines';
-    DelayedInsert = true;
     LinksAllowed = false;
+    InsertAllowed = false;
     PageType = ListPart;
     SourceTable = "PDS Prescription Line Buffer";
 
@@ -22,21 +22,25 @@ page 50038 "PDS Prescription Subform"
                 {
                     ToolTip = 'Specifies the value of the Medicine field.', Comment = '%';
                 }
+                // field("Store No."; Rec."Store No.")
+                // {
+                //     ToolTip = 'Specifies the value of the Medicine field.', Comment = '%';
+                // }
                 field("Item No."; Rec."Item No.")
                 {
                     ToolTip = 'Specifies the value of the Item No. field.', Comment = '%';
 
-                    trigger OnLookup(var Text: Text): Boolean
-                    var
-                        PrescHeader: Record "PDS Prescription Hdr Buffer";
-                        PlanetSubCode: Record "Planet Subcode";
-                    begin
-                        if PrescHeader.Get(Rec."Prescription ID") then;
-                        PlanetSubCode.Reset();
-                        PlanetSubCode.SetRange("Location Code", PrescHeader."Pharmacy No.");
-                        if Page.RunModal(Page::"Planet Item Subcode", PlanetSubCode) = Action::LookupOK then
-                            Rec.Validate("Item No.", PlanetSubCode."Item Code");
-                    end;
+                    // trigger OnLookup(var Text: Text): Boolean
+                    // var
+                    //     PrescHeader: Record "PDS Prescription Hdr Buffer";
+                    //     PlanetSubCode: Record "Planet Subcode";
+                    // begin
+                    //     if PrescHeader.Get(Rec."Prescription ID") then;
+                    //     PlanetSubCode.Reset();
+                    //     PlanetSubCode.SetRange("Location Code", PrescHeader."Pharmacy No.");
+                    //     if Page.RunModal(Page::"Planet Item Subcode", PlanetSubCode) = Action::LookupOK then
+                    //         Rec.Validate("Item No.", PlanetSubCode."Item Code");
+                    // end;
                 }
                 field("Item Sub Description"; Rec."Item Sub Description")
                 {
@@ -64,51 +68,32 @@ page 50038 "PDS Prescription Subform"
                     var
                         InvLookupTable: Record "LSC Inventory Lookup Table";
                         RetailUser: Record "LSC Retail User";
-                        // PrescHeader: Record "PDS Prescription Hdr Buffer";
                         EnhanceFunc: Codeunit "Enhancement Functions PDI";
                         PDSInvLookupList: Page "PDS Inventory Lookup List";
                     begin
                         Rec.TestField("Qty. to Dispense");
 
-                        // if Rec."Lot No." <> '' then
-                        //     exit;
-
                         if RetailUser.Get(UserId) then;
                         RetailUser.TestField("Inventory Location");
-                        // EnhanceFunc.UpdateInvLookupTableQ(Rec."Item No.", '', RetailUser."Inventory Location", true);
+                        EnhanceFunc.UpdateInvLookupTableQ(Rec."Item No.", '', RetailUser."Inventory Location", true);    //comment for testing
 
                         InvLookupTable.Reset();
                         InvLookupTable.SetRange("Item No.", Rec."Item No.");
                         InvLookupTable.SetRange(Location, RetailUser."Inventory Location");
+                        if InvLookupTable.Count = 0 then
+                            Error(StrSubstNo('Item No. %1 has zero inventory for the location %2.', Rec."Item No.", RetailUser."Inventory Location"));
 
                         Clear(PDSInvLookupList);
                         PDSInvLookupList.SetTableView(InvLookupTable);
                         PDSInvLookupList.SetRecord(InvLookupTable);
                         PDSInvLookupList.LookupMode(true);
-                        PDSInvLookupList.SetUp(Rec."Item Sub Description");
+                        PDSInvLookupList.SetUp(Rec."Item Sub Description", Rec."Item Sub Brand");
                         if PDSInvLookupList.RunModal() = Action::LookupOK then begin
                             PDSInvLookupList.GetRecord(InvLookupTable);
                             Rec."Lot No." := InvLookupTable."Lot No.";
                             Rec."Expiration Date" := InvLookupTable."Expiration Date";
                             Rec.Modify(false);
                         end;
-
-                        /*
-                        if RetailUser.Get(UserId) then;
-                        if PrescHeader.Get(Rec."Prescription ID") then;
-                        EnhanceFunc.UpdateInvLookupTableQ(Rec."Item No.", '', RetailUser."Inventory Location", true);
-
-                        InvLookupTable.Reset();
-                        // InvLookupTable.SetRange("Store No.", PrescHeader."Pharmacy No.");
-                        InvLookupTable.SetRange("Item No.", Rec."Item No.");
-                        InvLookupTable.SetRange(Location, RetailUser."Inventory Location");
-                        if Page.RunModal(Page::"PDS Inventory Lookup List", InvLookupTable) = Action::LookupOK then begin
-                            // if PDSInvLookupList.RunModal() = Action::LookupOK then begin
-                            Rec."Lot No." := InvLookupTable."Lot No.";
-                            Rec."Expiration Date" := InvLookupTable."Expiration Date";
-                            Rec.Modify(false);
-                        end;
-                        */
                     end;
                 }
                 field("Expiration Date"; Rec."Expiration Date")
@@ -135,4 +120,19 @@ page 50038 "PDS Prescription Subform"
             }
         }
     }
+    trigger OnAfterGetRecord()
+    var
+        PrescHeader: Record "PDS Prescription Hdr Buffer";
+        PrescLines: Record "PDS Prescription Line Buffer";
+    begin
+        if PrescHeader.Get(Rec."Prescription ID") then;
+        PrescLines.Reset();
+        PrescLines.SetRange("Prescription ID", PrescHeader."Prescription ID");
+        PrescLines.SetFilter("Store No.", '<>%1', PrescHeader."Pharmacy No.");
+        if PrescLines.FindSet() then
+            repeat
+                PrescLines."Store No." := PrescHeader."Pharmacy No.";
+                PrescLines.Modify();
+            until PrescLines.Next() = 0;
+    end;
 }

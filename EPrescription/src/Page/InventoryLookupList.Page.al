@@ -2,7 +2,8 @@ page 50042 "PDS Inventory Lookup List"
 {
     ApplicationArea = All;
     Caption = 'PDS Inventory Lookup List';
-    PageType = StandardDialog;
+    Editable = false;
+    PageType = Worksheet;
     SourceTable = "LSC Inventory Lookup Table";
 
     layout
@@ -11,6 +12,7 @@ page 50042 "PDS Inventory Lookup List"
         {
             group(ItemDetails)
             {
+                ShowCaption = false;
                 field("Item No."; Rec."Item No.")
                 {
                     Editable = false;
@@ -18,6 +20,13 @@ page 50042 "PDS Inventory Lookup List"
                 }
                 field(ItemDescription; ItemDescription)
                 {
+                    Caption = 'Item Sub Description';
+                    Editable = false;
+                    ToolTip = 'Specifies the value of the Item Description field.', Comment = '%';
+                }
+                field(ItemDescription2; ItemDescription2)
+                {
+                    Caption = 'Item Sub Brand';
                     Editable = false;
                     ToolTip = 'Specifies the value of the Item Description field.', Comment = '%';
                 }
@@ -48,11 +57,13 @@ page 50042 "PDS Inventory Lookup List"
         }
     }
 
-    procedure SetUp(itemDesc: Text[100])
+    procedure SetUp(itemDesc: Text[100]; itemDesc2: Text[100])
     begin
         ItemDescription := itemDesc;
+        ItemDescription2 := itemDesc2;
     end;
 
     var
         ItemDescription: Text[100];
+        ItemDescription2: Text[100];
 }

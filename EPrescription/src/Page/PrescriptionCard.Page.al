@@ -31,13 +31,30 @@ page 50037 "PDS Prescription Card"
                         MemberAccountNew: Record "LSC Member Account";
                         MemberContactNew: Record "LSC Member Contact";
                         MembershipCardNew: Record "LSC Membership Card";
+                        MemberClub: Record "LSC Member Club";
+                        UserSetup: Record "User Setup";
+                        NoSeriesMgt: Codeunit NoSeriesManagement;
                     begin
                         if Rec."Member Account No." = '' then begin
+                            //--Assign and validate account no series
+                            if not UserSetup.Get(UserId) then
+                                Error('Please assigned Member Club Code in the User Setup for User %1.', UserId);
+                            UserSetup.TestField("Member Club Code");
+                            if not MemberClub.Get(UserSetup."Member Club Code") then
+                                Error('Assigned Member Club (%1) does not exist.', UserSetup."Member Club Code");
+                            MemberClub.TestField("Account No. Series");
+                            MemberClub.TestField("Contact No. Series");
+                            MemberClub.TestField("Card No. Series");
+
+                            //  Member Account
                             MemberAccountNew.Init();
-                            MemberAccountNew."No." := '';
+                            MemberAccountNew."Club Code" := MemberClub.Code;
+                            MemberAccountNew."No. Series" := MemberClub."Account No. Series";
+                            MemberAccountNew."No." := NoSeriesMgt.GetNextNo(MemberAccountNew."No. Series", WorkDate, true);
                             MemberAccountNew.Description := StrSubstNo('%1 %2 %3', Rec."Patient First Name", Rec."Patient Middle Name", Rec."Patient Last Name");
                             MemberAccountNew.Insert(true);
 
+                            //  Member Contract
                             MemberContactNew.Init();
                             MemberContactNew.Validate("Account No.", MemberAccountNew."No.");
                             MemberContactNew."Contact No." := '';
@@ -54,6 +71,7 @@ page 50037 "PDS Prescription Card"
                                 MemberContactNew.Gender := MemberContactNew.Gender::Male;
                             MemberContactNew.Insert(true);
 
+                            //  Membership Card
                             MembershipCardNew.Init();
                             MembershipCardNew."Card No." := Rec."Member Card No.";
                             MembershipCardNew."Account No." := MemberAccountNew."No.";
