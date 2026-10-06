@@ -90,12 +90,13 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
                                 //--update prescription lines converted
                                 if PresLineBuffer2.Get(PresLineBuffer."Prescription ID", PresLineBuffer."Line No.") then begin
                                     PresLineBuffer2."Converted to POS" := true;
-                                    PresLineBuffer2."Converted Date" := Today;
+                                    PresLineBuffer2."Date Converted to POS" := Today;
                                     PresLineBuffer2.Modify();
                                 end;
                             until PresLineBuffer.Next() = 0;
                         LSCPOSTrans.CalcTotals;
                         PresHdrBuffer."Converted to POS" := true;
+                        PresHdrBuffer."Date Converted to POS" := Today();
                         PresHdrBuffer.Modify;
 
                         processed := true;
@@ -115,6 +116,7 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
     begin
         if PrescLines.Get(POSTransLine."Prescription ID", POSTransLine."Prescription Line No.") then begin
             PrescLines."Converted to POS" := false;
+            PrescLines."Date Converted to POS" := 0D;
             PrescLines.Modify();
         end;
     end;
@@ -122,15 +124,23 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"LSC POS Transaction Events", OnAfterVoidTransaction, '', false, false)]
     local procedure LSCPOSTransactionEvents_OnAfterVoidTransaction(var POSTransaction: Record "LSC POS Transaction")
     var
+        PrescHeader: Record "PDS Prescription Hdr Buffer";
         PrescLines: Record "PDS Prescription Line Buffer";
         POSTransLine: Record "LSC POS Trans. Line";
     begin
+        if PrescHeader.Get(POSTransaction."Prescription ID") then begin
+            PrescHeader."Converted to POS" := false;
+            PrescHeader."Date Converted to POS" := 0D;
+            PrescHeader.Modify();
+        end;
+
         POSTransLine.Reset();
         POSTransLine.SetRange("Receipt No.", POSTransaction."Receipt No.");
         if POSTransLine.FindSet() then
             repeat
                 if PrescLines.Get(POSTransLine."Prescription ID", POSTransLine."Prescription Line No.") then begin
                     PrescLines."Converted to POS" := false;
+                    PrescLines."Date Converted to POS" := 0D;
                     PrescLines.Modify();
                 end;
             until POSTransLine.Next() = 0;

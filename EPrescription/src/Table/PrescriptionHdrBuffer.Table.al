@@ -79,6 +79,11 @@ table 50015 "PDS Prescription Hdr Buffer"
             Caption = 'Converted to POS';
             Editable = false;
         }
+        field(102; "Date Converted to POS"; Date)
+        {
+            Caption = 'Date Converted to POS';
+            Editable = false;
+        }
     }
     keys
     {

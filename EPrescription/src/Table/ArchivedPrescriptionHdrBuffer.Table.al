@@ -91,12 +91,12 @@ table 50017 "PDS Archived Presc. Header"
             Caption = 'Converted to POS';
             Editable = false;
         }
-        field(102; "Archived By User"; Code[50])
+        field(111; "Archived By User"; Code[50])
         {
             Caption = 'Archived By User';
             Editable = false;
         }
-        field(103; "Archived Date"; Date)
+        field(112; "Archived Date"; Date)
         {
             Caption = 'Archived Date';
             Editable = false;

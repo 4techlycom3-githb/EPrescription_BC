@@ -90,9 +90,9 @@ table 50016 "PDS Prescription Line Buffer"
             Caption = 'Converted to POS';
             Editable = false;
         }
-        field(55; "Converted Date"; Date)
+        field(55; "Date Converted to POS"; Date)
         {
-            Caption = 'Converted Date';
+            Caption = 'Date Converted to POS';
             Editable = false;
         }
         field(56; "Item Sub Brand"; Text[100])

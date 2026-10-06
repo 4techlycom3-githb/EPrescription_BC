@@ -7,5 +7,10 @@ tableextension 50102 "PDS General Ledger Setup" extends "General Ledger Setup"
             Caption = 'Dispense Date Cover';
             DataClassification = CustomerContent;
         }
+        field(50011; "Prescription Preserve Date"; DateFormula)
+        {
+            Caption = 'Prescription Preserve Date';
+            DataClassification = CustomerContent;
+        }
     }
 }
