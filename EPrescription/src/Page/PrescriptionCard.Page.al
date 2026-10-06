@@ -204,9 +204,19 @@ page 50037 "PDS Prescription Card"
     trigger OnAfterGetRecord()
     var
         RetailUser: Record "LSC Retail User";
+        PrescLines: Record "PDS Prescription Line Buffer";
     begin
         if RetailUser.Get(UserId()) then
             InventoryLocation := RetailUser."Inventory Location";
+
+        PrescLines.Reset();
+        PrescLines.SetRange("Prescription ID", Rec."Prescription ID");
+        PrescLines.SetFilter("Store No.", '<>%1', Rec."Pharmacy No.");
+        if PrescLines.FindSet() then
+            repeat
+                PrescLines."Store No." := Rec."Pharmacy No.";
+                PrescLines.Modify();
+            until PrescLines.Next() = 0;
 
         if Rec."Member Card No." <> '' then
             CurrPage.memberSalesHistory.Page.LoadData(Rec."Member Card No.");    //comment for testing

@@ -22,25 +22,9 @@ page 50038 "PDS Prescription Subform"
                 {
                     ToolTip = 'Specifies the value of the Medicine field.', Comment = '%';
                 }
-                // field("Store No."; Rec."Store No.")
-                // {
-                //     ToolTip = 'Specifies the value of the Medicine field.', Comment = '%';
-                // }
                 field("Item No."; Rec."Item No.")
                 {
                     ToolTip = 'Specifies the value of the Item No. field.', Comment = '%';
-
-                    // trigger OnLookup(var Text: Text): Boolean
-                    // var
-                    //     PrescHeader: Record "PDS Prescription Hdr Buffer";
-                    //     PlanetSubCode: Record "Planet Subcode";
-                    // begin
-                    //     if PrescHeader.Get(Rec."Prescription ID") then;
-                    //     PlanetSubCode.Reset();
-                    //     PlanetSubCode.SetRange("Location Code", PrescHeader."Pharmacy No.");
-                    //     if Page.RunModal(Page::"Planet Item Subcode", PlanetSubCode) = Action::LookupOK then
-                    //         Rec.Validate("Item No.", PlanetSubCode."Item Code");
-                    // end;
                 }
                 field("Item Sub Description"; Rec."Item Sub Description")
                 {
@@ -120,19 +104,4 @@ page 50038 "PDS Prescription Subform"
             }
         }
     }
-    trigger OnAfterGetRecord()
-    var
-        PrescHeader: Record "PDS Prescription Hdr Buffer";
-        PrescLines: Record "PDS Prescription Line Buffer";
-    begin
-        if PrescHeader.Get(Rec."Prescription ID") then;
-        PrescLines.Reset();
-        PrescLines.SetRange("Prescription ID", PrescHeader."Prescription ID");
-        PrescLines.SetFilter("Store No.", '<>%1', PrescHeader."Pharmacy No.");
-        if PrescLines.FindSet() then
-            repeat
-                PrescLines."Store No." := PrescHeader."Pharmacy No.";
-                PrescLines.Modify();
-            until PrescLines.Next() = 0;
-    end;
 }

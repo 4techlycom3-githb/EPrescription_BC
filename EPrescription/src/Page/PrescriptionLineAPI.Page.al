@@ -49,6 +49,10 @@ page 50040 "PDS Prescription Line API"
                 {
                     Caption = 'Notes';
                 }
+                field(qtyDispensed; Rec."Qty. to Dispense")
+                {
+                    Caption = 'Qty Dispensed';
+                }
             }
         }
     }
