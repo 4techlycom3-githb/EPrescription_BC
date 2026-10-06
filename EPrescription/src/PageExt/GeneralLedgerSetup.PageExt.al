@@ -9,6 +9,13 @@ pageextension 50100 "PDS General Ledger Setup" extends "General Ledger Setup"
                 ApplicationArea = All;
                 ToolTip = 'Specifies the value of the Dispense Date Cover field.', Comment = '%';
             }
+            field("Prescription Validity Months"; Rec."Prescription Validity Months")
+            {
+                ApplicationArea = All;
+                MaxValue = 12;
+                MinValue = 0;
+                ToolTip = 'Specifies the value of the Prescription Validity Months field.', Comment = '%';
+            }
         }
     }
 }
