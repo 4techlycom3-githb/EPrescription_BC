@@ -211,10 +211,10 @@ page 50037 "PDS Prescription Card"
 
         PrescLines.Reset();
         PrescLines.SetRange("Prescription ID", Rec."Prescription ID");
-        PrescLines.SetFilter("Store No.", '<>%1', Rec."Pharmacy No.");
         if PrescLines.FindSet() then
             repeat
                 PrescLines."Store No." := Rec."Pharmacy No.";
+                PrescLines."Location Code" := InventoryLocation;
                 PrescLines.Modify();
             until PrescLines.Next() = 0;
 

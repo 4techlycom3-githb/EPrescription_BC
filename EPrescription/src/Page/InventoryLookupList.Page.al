@@ -43,7 +43,7 @@ page 50042 "PDS Inventory Lookup List"
                     Editable = false;
                     ToolTip = 'Specifies the value of the Expiration Date field.', Comment = '%';
                 }
-                field("PDI Net Inventory"; Rec."PDI Net Inventory")
+                field("PDI Net Inventory"; Rec."PDI Net Inventory" - GetTotalQtyToDispense(Rec."Item No.", Rec.Location))
                 {
                     Editable = false;
                     ToolTip = 'Specifies the value of the PDI Net Inventory field.', Comment = '%';
@@ -56,6 +56,18 @@ page 50042 "PDS Inventory Lookup List"
             }
         }
     }
+
+    local procedure GetTotalQtyToDispense(ItemNo: Code[20]; LocationCode: Code[20]): Decimal
+    var
+        PrescLines: Record "PDS Prescription Line Buffer";
+    begin
+        PrescLines.Reset();
+        PrescLines.SetRange("Item No.", ItemNo);
+        PrescLines.SetRange("Location Code", LocationCode);
+        PrescLines.SetRange("Lot No.", Rec."Lot No.");
+        PrescLines.CalcSums("Qty. to Dispense");
+        exit(PrescLines."Qty. to Dispense");
+    end;
 
     procedure SetUp(itemDesc: Text[100]; itemDesc2: Text[100])
     begin

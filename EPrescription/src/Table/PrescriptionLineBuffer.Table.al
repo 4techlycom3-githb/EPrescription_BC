@@ -121,12 +121,21 @@ table 50016 "PDS Prescription Line Buffer"
             Caption = 'Store No.';
             Editable = false;
         }
+        field(60; "Location Code"; Code[20])
+        {
+            Caption = 'Location Code';
+            Editable = false;
+        }
     }
     keys
     {
         key(PK; "Prescription ID", "Line No.")
         {
             Clustered = true;
+        }
+        Key(Key1; "Item No.", "Location Code", "Lot No.")
+        {
+            SumIndexFields = "Qty. to Dispense";
         }
     }
 }
