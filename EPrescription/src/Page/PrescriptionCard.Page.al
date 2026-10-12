@@ -15,10 +15,12 @@ page 50037 "PDS Prescription Card"
 
                 field("Prescription ID"; Rec."Prescription ID")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Prescription ID field.', Comment = '%';
                 }
                 field("Health Plus No."; Rec."Health Plus No.")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Health Plus No. field.', Comment = '%';
                 }
                 field("Member Account No."; Rec."Member Account No.")
@@ -87,46 +89,57 @@ page 50037 "PDS Prescription Card"
                 }
                 field("Member Card No."; Rec."Member Card No.")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Member Card No. field.', Comment = '%';
                 }
                 field("Patient First Name"; Rec."Patient First Name")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Patient First Name field.', Comment = '%';
                 }
                 field("Patient Middle Name"; Rec."Patient Middle Name")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Patient Middle Name field.', Comment = '%';
                 }
                 field("Patient Last Name"; Rec."Patient Last Name")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Patient Last Name field.', Comment = '%';
                 }
                 field(Gender; Rec.Gender)
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Gender field.', Comment = '%';
                 }
                 field(Birthdate; Rec.Birthdate)
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Birthdate field.', Comment = '%';
                 }
                 field(Age; Rec.Age)
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Age field.', Comment = '%';
                 }
                 field(Address; Rec.Address)
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Address field.', Comment = '%';
                 }
                 field("Prescribing Doctor"; Rec."Prescribing Doctor")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Prescribing Doctor field.', Comment = '%';
                 }
                 field("Healthcare Assistant"; Rec."Healthcare Assistant")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Healthcare Assistant field.', Comment = '%';
                 }
                 field("Pharmacy No."; Rec."Pharmacy No.")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Pharmacy No. field.', Comment = '%';
                 }
                 field("Sent to POS"; Rec."Sent to POS")
