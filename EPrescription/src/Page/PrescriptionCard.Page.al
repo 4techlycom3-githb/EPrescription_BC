@@ -176,6 +176,25 @@ page 50037 "PDS Prescription Card"
     {
         area(Processing)
         {
+            action(ShowMemberAccount)
+            {
+                Caption = 'Show Member Account';
+                ToolTip = 'Show the member account.';
+                Image = ShowSelected;
+                PromotedCategory = Process;
+                Promoted = true;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+
+                trigger OnAction()
+                var
+                    MemberAccount: Record "LSC Member Account";
+                begin
+                    if Rec."Member Account No." <> '' then
+                        if MemberAccount.Get(Rec."Member Account No.") then
+                            Page.Run(Page::"LSC Member Account", MemberAccount);
+                end;
+            }
             action(PrintPrescription)
             {
                 Caption = 'Print Prescription';

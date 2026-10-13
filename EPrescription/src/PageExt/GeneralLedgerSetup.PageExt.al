@@ -16,6 +16,11 @@ pageextension 50100 "PDS General Ledger Setup" extends "General Ledger Setup"
                 MinValue = 0;
                 ToolTip = 'Specifies the value of the Prescription Validity Months field.', Comment = '%';
             }
+            field("Show Zero Inv. in Prescription"; Rec."Show Zero Inv. in Prescription")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the value of the Show Zero Inv. in Prescription field.', Comment = '%';
+            }
         }
     }
 }

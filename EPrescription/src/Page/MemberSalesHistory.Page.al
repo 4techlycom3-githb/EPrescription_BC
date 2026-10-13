@@ -69,6 +69,7 @@ page 50041 "PDS Member Sales History"
         POSTransaction.SetCurrentKey("Member Card No.", "Dispense Date");
         POSTransaction.SetRange("Member Card No.", memberCardNo);
         POSTransaction.SetFilter("Dispense Date", '%1..%2', CALCDATE(GenLedgerSetup."Dispense Date Cover", Today()), Today());
+        POSTransaction.SetFilter("Ackn. Receipt No.", '<>%1', '');
         if POSTransaction.FindSet() then
             repeat
                 POSTransLine.Reset();

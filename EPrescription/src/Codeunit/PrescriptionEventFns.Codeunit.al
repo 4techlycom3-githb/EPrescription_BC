@@ -34,6 +34,42 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
         exit(0);
     end;
 
+    local procedure UpdatePOSTransactionFields(var POSTransaction: Record "LSC POS Transaction"; var POSTransLine: Record "LSC POS Trans. Line";
+                                                        PrescHdr: Record "PDS Prescription Hdr Buffer"; PrescLine: Record "PDS Prescription Line Buffer")
+    var
+        Item: Record Item;
+        MemberContact: Record "LSC Member Contact";
+    begin
+        // POS Transaction
+        MemberContact.Reset();
+        MemberContact.SetRange("Account No.", PrescHdr."Member Account No.");
+        if MemberContact.FindFirst() then;
+        POSTransaction."Primary Card No." := MemberContact."Primary Card No.";
+        POSTransaction."PWD ID" := MemberContact."PWD ID No.";
+        POSTransaction.PWD := MemberContact.PWD;
+        POSTransaction.Pregnant := MemberContact.Pregnant;
+        POSTransaction."Booklet No." := MemberContact."Booklet No.";
+        POSTransaction."PDI Account Type" := MemberContact."PDI Account Type";
+        POSTransaction."PDI Patient Relation" := MemberContact."PDI Patient Relation";
+        POSTransaction."PDI Cluster" := MemberContact."PDI Cluster";
+        POSTransaction."PDI Brgy. Name" := MemberContact."PDI Brgy. Name";
+        POSTransaction."PDI Date of Birth" := MemberContact."Date of Birth";
+        POSTransaction."PDI Age" := MemberContact."PDI Age";
+        POSTransaction."PDI Main Member Card No." := PrescHdr."Member Card No.";
+        POSTransaction."PDI Member Name" := MemberContact.Name;
+        POSTransaction."PDI Member Address" := MemberContact.Address;
+
+        // POS Trans. Line 
+        if Item.Get(POSTransLine.Number) then;
+        PrescLine.CalcFields("Item Sub Description", "Item Sub Brand");
+        POSTransLine.Validate("Internal Group Code", Item."Internal Group Code");
+        POSTransLine.Validate("Sub Description", PrescLine."Item Sub Description");
+        POSTransLine.Validate("Sub Description 2", PrescLine."Item Sub Brand");
+        POSTransLine.Validate("Dispense Date", POSTransaction."Dispense Date");
+        POSTransLine.Validate("Unit of Measure", Item."Base Unit of Measure");
+        POSTransLine.Validate("Sales Type Loc. Code", PrescLine."Location Code");
+    end;
+
     //***Events***
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"LSC POS Controller", OnLookupResult, '', false, false)]
     local procedure LSCPOSController_OnLookupResult(LookupID: Text; FilterText: Text; resultOK: Boolean; var processed: Boolean)
@@ -76,15 +112,19 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
                                 LSCPOSTransLine."Store No." := LSCPOSTransaction."Store No.";
                                 LSCPOSTransLine."POS Terminal No." := LSCPOSTransaction."POS Terminal No.";
                                 LSCPOSTransLine.Validate("Line No.", Counter_l);
+                                LSCPOSTransLine.Validate("Parent Line", LSCPOSTransLine."Line No.");
                                 LSCPOSTransLine.Insert(true);
                                 LSCPOSTransLine."Entry Type" := LSCPOSTransLine."Entry Type"::Item;
                                 LSCPOSTransLine.Validate(Number, PresLineBuffer."Item No.");
                                 LSCPOSTransLine.Validate(Quantity, PresLineBuffer."Qty. to Dispense");
-                                // LSCPOSTransLine.Validate("Lot No.", PresLineBuffer."Lot No.");
-                                // LSCPOSTransLine.Validate("Expiration Date", PresLineBuffer."Expiration Date");
+                                LSCPOSTransLine.Validate("Lot No.", PresLineBuffer."Lot No.");
+                                LSCPOSTransLine.Validate("Expiration Date", PresLineBuffer."Expiration Date");
                                 LSCPOSTransLine.CalcPrices();
                                 LSCPOSTransLine."Prescription ID" := PresLineBuffer."Prescription ID";
                                 LSCPOSTransLine."Prescription Line No." := PresLineBuffer."Line No.";
+                                //--
+                                UpdatePOSTransactionFields(LSCPOSTransaction, LSCPOSTransLine, PresHdrBuffer, PresLineBuffer);
+                                //--
                                 LSCPOSTransLine.Modify;
 
                                 //--update prescription lines converted
@@ -98,6 +138,7 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
                         PresHdrBuffer."Converted to POS" := true;
                         PresHdrBuffer."Date Converted to POS" := Today();
                         PresHdrBuffer.Modify;
+                        LSCPOSTransaction.Modify();
 
                         processed := true;
                     end else begin
