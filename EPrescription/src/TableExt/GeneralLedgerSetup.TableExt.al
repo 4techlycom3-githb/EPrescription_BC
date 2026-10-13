@@ -12,5 +12,10 @@ tableextension 50102 "PDS General Ledger Setup" extends "General Ledger Setup"
             Caption = 'Prescription Validity Months';
             DataClassification = CustomerContent;
         }
+        field(50012; "Show Zero Inv. in Prescription"; Boolean)
+        {
+            Caption = 'Show Zero Inventory in Prescription';
+            DataClassification = CustomerContent;
+        }
     }
 }

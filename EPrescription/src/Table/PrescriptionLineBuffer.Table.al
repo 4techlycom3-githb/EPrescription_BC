@@ -31,7 +31,7 @@ table 50016 "PDS Prescription Line Buffer"
         }
         field(7; Qty; Decimal)
         {
-            Caption = 'Qty';
+            Caption = 'Prescribed Qty';
         }
         field(8; Notes; Text[100])
         {

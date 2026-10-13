@@ -60,12 +60,20 @@ page 50042 "PDS Inventory Lookup List"
     local procedure GetTotalQtyToDispense(ItemNo: Code[20]; LocationCode: Code[20]): Decimal
     var
         PrescLines: Record "PDS Prescription Line Buffer";
+        GeneralLedgerSetup: Record "General Ledger Setup";
     begin
         PrescLines.Reset();
         PrescLines.SetRange("Item No.", ItemNo);
         PrescLines.SetRange("Location Code", LocationCode);
         PrescLines.SetRange("Lot No.", Rec."Lot No.");
         PrescLines.CalcSums("Qty. to Dispense");
+
+        GeneralLedgerSetup.Get();
+        if (Rec."PDI Net Inventory" - PrescLines."Qty. to Dispense") = 0 then
+            if not GeneralLedgerSetup."Show Zero Inv. in Prescription" then begin
+                Rec.Delete();
+                exit;
+            end;
         exit(PrescLines."Qty. to Dispense");
     end;
 

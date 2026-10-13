@@ -75,14 +75,19 @@ page 50037 "PDS Prescription Card"
 
                             //  Membership Card
                             MembershipCardNew.Init();
-                            MembershipCardNew."Card No." := Rec."Member Card No.";
+                            MembershipCardNew."Card No." := '';
                             MembershipCardNew."Account No." := MemberAccountNew."No.";
                             MembershipCardNew."Contact No." := MemberContactNew."Contact No.";
                             MembershipCardNew."Club Code" := MemberAccountNew."Club Code";
                             MembershipCardNew.Insert(true);
 
                             Page.Run(Page::"LSC Member Account", MemberAccountNew);
+
+                            MembershipCardNew.Reset();
+                            MembershipCardNew.SetRange("Account No.", MemberAccountNew."No.");
+                            if MembershipCardNew.FindFirst() then;
                             Rec."Member Account No." := MemberAccountNew."No.";
+                            Rec."Member Card No." := MembershipCardNew."Card No.";
                             Rec.Modify(false);
                         end;
                     end;

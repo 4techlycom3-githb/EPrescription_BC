@@ -16,10 +16,12 @@ page 50038 "PDS Prescription Subform"
                 ShowCaption = false;
                 field("Line No."; Rec."Line No.")
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Line No. field.', Comment = '%';
                 }
                 field(Medicine; Rec.Medicine)
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Medicine field.', Comment = '%';
                 }
                 field("Item No."; Rec."Item No.")
@@ -36,6 +38,7 @@ page 50038 "PDS Prescription Subform"
                 }
                 field(Qty; Rec.Qty)
                 {
+                    Editable = false;
                     ToolTip = 'Specifies the value of the Qty field.', Comment = '%';
                 }
                 field("Qty. to Dispense"; Rec."Qty. to Dispense")
