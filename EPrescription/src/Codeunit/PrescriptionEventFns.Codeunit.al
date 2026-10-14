@@ -61,7 +61,6 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
 
         // POS Trans. Line 
         if Item.Get(POSTransLine.Number) then;
-        PrescLine.CalcFields("Item Sub Description", "Item Sub Brand");
         POSTransLine.Validate("Internal Group Code", Item."Internal Group Code");
         POSTransLine.Validate("Sub Description", PrescLine."Item Sub Description");
         POSTransLine.Validate("Sub Description 2", PrescLine."Item Sub Brand");
