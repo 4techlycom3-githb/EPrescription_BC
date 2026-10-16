@@ -96,6 +96,7 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
         PresLineBuffer: Record "PDS Prescription Line Buffer";
         PresLineBuffer2: Record "PDS Prescription Line Buffer";
         LSCPOSTransaction: Record "LSC POS Transaction";
+        LSCPOSTransactionUpdate: Record "LSC POS Transaction";
         LSCPOSTransLine: Record "LSC POS Trans. Line";
         LSCPOSControlInterface: Codeunit "LSC POS Control Interface";
         LSCPOSTrans: Codeunit "LSC POS Transaction";
@@ -115,6 +116,8 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
                         LSCPOSTransaction."Prescribing Doctor" := PresHdrBuffer."Prescribing Doctor";
                         LSCPOSTransaction."Healthcare Assistant" := PresHdrBuffer."Healthcare Assistant";
                         UpdatePOSTransactionFields(LSCPOSTransaction, PresHdrBuffer);
+                        LSCPOSTransactionUpdate := LSCPOSTransaction;
+                        LSCPOSTransactionUpdate.Modify();
                         if PresHdrBuffer."Member Card No." <> '' then
                             LSCPOSTrans.InputMemberCard(PresHdrBuffer."Member Card No.");
                         LSCPOSTrans.SetPOSTransaction(LSCPOSTransaction);
