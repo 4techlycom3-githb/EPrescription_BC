@@ -69,7 +69,7 @@ page 50042 "PDS Inventory Lookup List"
         PrescLines.CalcSums("Qty. to Dispense");
 
         GeneralLedgerSetup.Get();
-        if (Rec."PDI Net Inventory" - PrescLines."Qty. to Dispense") = 0 then
+        if (Rec."PDI Net Inventory" - PrescLines."Qty. to Dispense") <= 0 then
             if not GeneralLedgerSetup."Show Zero Inv. in Prescription" then begin
                 Rec.Delete();
                 exit;
