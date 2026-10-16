@@ -4,8 +4,25 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
 
     procedure HasIncompleteLineBeforeConvertToPOS(var PrescriptionID: Code[20]): Boolean
     var
+        PrescriptionHeader: Record "PDS Prescription Hdr Buffer";
         PrescriptionLineBuffer: Record "PDS Prescription Line Buffer";
     begin
+        if PrescriptionHeader.Get(PrescriptionID) then begin
+            PrescriptionHeader.TestField("Health Plus No.");
+            PrescriptionHeader.TestField("Member Account No.");
+            PrescriptionHeader.TestField("Member Card No.");
+            PrescriptionHeader.TestField("Patient First Name");
+            PrescriptionHeader.TestField("Patient Middle Name");
+            PrescriptionHeader.TestField("Patient Last Name");
+            PrescriptionHeader.TestField(Gender);
+            PrescriptionHeader.TestField(Birthdate);
+            PrescriptionHeader.TestField(Age);
+            PrescriptionHeader.TestField(Address);
+            PrescriptionHeader.TestField("Prescribing Doctor");
+            PrescriptionHeader.TestField("Healthcare Assistant");
+            PrescriptionHeader.TestField("Pharmacy No.");
+        end;
+
         PrescriptionLineBuffer.Reset();
         PrescriptionLineBuffer.SetRange("Prescription ID", PrescriptionID);
         if PrescriptionLineBuffer.FindSet() then
@@ -94,7 +111,7 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
 
                     LSCPOSTrans.GetPOSTransaction(LSCPOSTransaction);
                     if not LSCPOSTransaction.IsEmpty then begin
-                        
+
                         LSCPOSTransaction."Prescribing Doctor" := PresHdrBuffer."Prescribing Doctor";
                         LSCPOSTransaction."Healthcare Assistant" := PresHdrBuffer."Healthcare Assistant";
                         UpdatePOSTransactionFields(LSCPOSTransaction, PresHdrBuffer);
@@ -139,14 +156,13 @@ codeunit 50020 "PDS E-Prescription Event & Fns"
                         LSCPOSTrans.CalcTotals;
                         PresHdrBuffer."Converted to POS" := true;
                         PresHdrBuffer."Date Converted to POS" := Today();
-                        PresHdrBuffer.Modify; 
+                        PresHdrBuffer.Modify;
 
                         processed := true;
                     end else begin
                         Message('Current POS Transaction Not Found.');
                         processed := false;
                     end;
-
                 end;
             end;
     end;
