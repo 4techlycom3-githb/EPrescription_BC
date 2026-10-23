@@ -26,6 +26,7 @@ page 50038 "PDS Prescription Subform"
                 }
                 field("Item No."; Rec."Item No.")
                 {
+                    Editable = Rec."Converted to POS" = false;
                     ToolTip = 'Specifies the value of the Item No. field.', Comment = '%';
                 }
                 field("Item Sub Description"; Rec."Item Sub Description")
@@ -43,6 +44,7 @@ page 50038 "PDS Prescription Subform"
                 }
                 field("Qty. to Dispense"; Rec."Qty. to Dispense")
                 {
+                    Editable = Rec."Converted to POS" = false;
                     Style = Attention;
                     ToolTip = 'Specifies the value of the Qty. to Dispense field.', Comment = '%';
                 }
@@ -58,6 +60,8 @@ page 50038 "PDS Prescription Subform"
                         EnhanceFunc: Codeunit "Enhancement Functions PDI";
                         PDSInvLookupList: Page "PDS Inventory Lookup List";
                     begin
+                        if Rec."Converted to POS" then
+                            Error('Cannot change Lot No. for a line that has been converted to POS.');
                         Rec.TestField("Qty. to Dispense");
 
                         if RetailUser.Get(UserId) then;
@@ -90,14 +94,17 @@ page 50038 "PDS Prescription Subform"
                 }
                 field(Dosage; Rec.Dosage)
                 {
+                    Editable = Rec."Converted to POS" = false;
                     ToolTip = 'Specifies the value of the Dosage field.', Comment = '%';
                 }
                 field(Signa; Rec.Signa)
                 {
+                    Editable = Rec."Converted to POS" = false;
                     ToolTip = 'Specifies the value of the Signa field.', Comment = '%';
                 }
                 field("Duration"; Rec."Duration")
                 {
+                    Editable = Rec."Converted to POS" = false;
                     ToolTip = 'Specifies the value of the Duration field.', Comment = '%';
                 }
                 field("Converted to POS"; Rec."Converted to POS")
